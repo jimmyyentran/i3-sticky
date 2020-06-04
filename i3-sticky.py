@@ -46,14 +46,13 @@ def swap(i3, _):
 
     # For each sticky group, try swapping the sticky container into this
     # workspace.
-    for group in get_groups(i3):
-        # TODO XXX For the (technically invalid) case of the placeholder being
-        # on the same workspace as the sticky container, perhaps we should
-        # first look up the sticky container by mark, check that it's on a
-        # different workspace and then execute the command.
-        i3.command('[workspace="__focused__" con_mark="^_sticky_%s_"] swap container with mark "_sticky_%s"' % (group, group))
+    tree = i3.get_tree()
+    workspace = tree.find_focused().workspace()
+    for g in tree.find_marked():
+        g.command(f'move container to workspace {workspace.name}')
 
 def on_new_window(i3, event):
+    print("on_new_window")
     instance = event.container.window_class
     if not instance:
         return
